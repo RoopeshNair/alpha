@@ -6,14 +6,14 @@ stages:
       - script: echo DevJob
 
   - stage: QA
-    dependsOn: Test    # this stage runs after Dev
+    dependsOn: Dev    # this stage runs after Dev
     jobs:
     - job: QAJob
       steps:
       - script: echo QAJob
 
   - stage: Perf
-    dependsOn: Test    # this stage runs in parallel with QA, after Dev
+    dependsOn: Dev    # this stage runs in parallel with QA, after Dev
     jobs:
     - job: PerfJob
       steps:
