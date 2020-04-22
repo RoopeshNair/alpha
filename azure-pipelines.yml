@@ -24,6 +24,10 @@ stages:
     - Perf
     - QA
     jobs:
-    - job: ProdJob
-      steps:
-      - script: echo ProdJob
+    - deployment: ProdJob
+      environment: prodEnv
+      strategy:
+        runOnce:
+          deploy:                    
+            steps:
+            - script: echo ProdJob
