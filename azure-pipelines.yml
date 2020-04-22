@@ -1,14 +1,29 @@
-# Docker image
-# Build a Docker image to run, deploy, or push to a container registry.
-# Add steps that use Docker Compose, tag images, push to a registry, run an image, and more:
-# https://docs.microsoft.com/vsts/pipelines/languages/docker
+stages:
+  - stage: Dev
+    jobs:
+    - job: DevJob
+      steps:
+      - script: echo DevJob
 
-pool:
-  vmImage: 'Ubuntu 16.04'
+  - stage: QA
+    dependsOn: Test    # this stage runs after Dev
+    jobs:
+    - job: QAJob
+      steps:
+      - script: echo QAJob
 
-variables:
-  imageName: 'your-container-image-name:$(build.buildId)'
+  - stage: Perf
+    dependsOn: Test    # this stage runs in parallel with QA, after Dev
+    jobs:
+    - job: PerfJob
+      steps:
+      - script: echo PerfJob
 
-steps:
-- script: docker build -f Dockerfile -t $(imageName) .
-  displayName: 'docker build'
+  - stage: Prod
+    dependsOn:         # this stage runs after QA and Perf
+    - Perf
+    - QA
+    jobs:
+    - job: ProdJob
+      steps:
+      - script: echo ProdJob
